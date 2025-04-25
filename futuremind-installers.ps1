@@ -1,27 +1,59 @@
 # -------------------------------
+# Check if winget is installed
+# -------------------------------
+
+$wingetInstalled = Get-Command "winget" -ErrorAction SilentlyContinue
+
+if (-not $wingetInstalled) {
+    Write-Output "winget not found. Install winget first"
+    exit
+
+} else {
+    Write-Output "winget is already installed."
+}
+
+# -------------------------------
 # Install Dev Tools using winget
 # -------------------------------
 
+# Function to install and check version of tools
+function Install-Tool {
+    param (
+        [string]$toolId,
+        [string]$toolName
+    )
+
+    Write-Output "Installing $toolName..."
+    try {
+        winget install --id $toolId -e --silent
+        # Check version of the installed tool
+        $toolVersion = winget show --id $toolId -e | Select-String "Version"
+        Write-Output "$toolName installed with version: $($toolVersion.Line)"
+    } catch {
+        Write-Output "Failed to install $toolName. Error: $_"
+    }
+}
+
 # Install VS Code
-winget install --id Microsoft.VisualStudioCode -e --silent
+Install-Tool -toolId "Microsoft.VisualStudioCode" -toolName "VS Code"
 
 # Install Oracle Java JRE
-winget install --id Oracle.JavaRuntimeEnvironment -e --silent
+Install-Tool -toolId "Oracle.JavaRuntimeEnvironment" -toolName "Oracle Java JRE"
 
 # Install Python 3.11.9 (Do not change the version)
-#winget install --id Python.Python.3 --version 3.11.9 -e --silent --accept-package-agreements --accept-source-agreements
+Install-Tool -toolId "Python.Python.3" -toolName "Python 3.11.9"
 
 # Install Node.js
-winget install --id OpenJS.NodeJS -e --silent
+Install-Tool -toolId "OpenJS.NodeJS" -toolName "Node.js"
 
 # Install Git
-winget install --id Git.Git -e --silent
+Install-Tool -toolId "Git.Git" -toolName "Git"
 
 # Install Wireshark 4.4.6
-winget install --id=WiresharkFoundation.Wireshark --version 4.4.6 -e --silent --accept-package-agreements --accept-source-agreements
+Install-Tool -toolId "WiresharkFoundation.Wireshark" -toolName "Wireshark 4.4.6"
 
 # Install MinGW-w64 for C/C++ development
-winget install --id=GnuWin.Mingw-w64 -e --silent --accept-package-agreements --accept-source-agreements
+Install-Tool -toolId "GnuWin.Mingw-w64" -toolName "MinGW-w64"
 
 # -------------------------------
 # Set Environment Variables
@@ -41,12 +73,12 @@ if ($javaPath) {
     }
 }
 
-# # Add VS Code to PATH
-# $vsCodePath = "C:\Program Files\Microsoft VS Code\bin"
-# $path = [Environment]::GetEnvironmentVariable("Path", "Machine")
-# if ($path -notlike "*$vsCodePath*") {
-#     [Environment]::SetEnvironmentVariable("Path", "$path;$vsCodePath", "Machine")
-# }
+# Add VS Code to PATH
+$vsCodePath = "C:\Program Files\Microsoft VS Code\bin"
+$path = [Environment]::GetEnvironmentVariable("Path", "Machine")
+if ($path -notlike "*$vsCodePath*") {
+    [Environment]::SetEnvironmentVariable("Path", "$path;$vsCodePath", "Machine")
+}
 
 # Add MinGW bin to PATH
 $mingwPath = "C:\Program Files\mingw-w64\bin"
@@ -57,8 +89,4 @@ if (Test-Path $mingwPath) {
     }
 }
 
-# -------------------------------
-# Reminder
-# -------------------------------
-Write-Output "`All tools installed and environment variables set."
-Write-Output "You may need to restart the computer or log off and log in again to apply PATH changes."
+Write-Output "All installations attempted. Please check the output for any failures."
