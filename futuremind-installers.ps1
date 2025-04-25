@@ -8,8 +8,8 @@ winget install --id Microsoft.VisualStudioCode -e --silent
 # Install Oracle Java JRE
 winget install --id Oracle.JavaRuntimeEnvironment -e --silent
 
-# Install Python 3.11.9
-winget install --id Python.Python.3 --version 3.11.9 -e --silent --accept-package-agreements --accept-source-agreements
+# Install Python 3.11.9 (Do not change the version)
+#winget install --id Python.Python.3 --version 3.11.9 -e --silent --accept-package-agreements --accept-source-agreements
 
 # Install Node.js
 winget install --id OpenJS.NodeJS -e --silent
@@ -41,12 +41,12 @@ if ($javaPath) {
     }
 }
 
-# Add VS Code to PATH
-$vsCodePath = "C:\Program Files\Microsoft VS Code\bin"
-$path = [Environment]::GetEnvironmentVariable("Path", "Machine")
-if ($path -notlike "*$vsCodePath*") {
-    [Environment]::SetEnvironmentVariable("Path", "$path;$vsCodePath", "Machine")
-}
+# # Add VS Code to PATH
+# $vsCodePath = "C:\Program Files\Microsoft VS Code\bin"
+# $path = [Environment]::GetEnvironmentVariable("Path", "Machine")
+# if ($path -notlike "*$vsCodePath*") {
+#     [Environment]::SetEnvironmentVariable("Path", "$path;$vsCodePath", "Machine")
+# }
 
 # Add MinGW bin to PATH
 $mingwPath = "C:\Program Files\mingw-w64\bin"
